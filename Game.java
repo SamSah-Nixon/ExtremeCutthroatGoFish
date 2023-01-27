@@ -1,5 +1,4 @@
 import java.util.Scanner;
-
 public class Game {
     Scanner scanner = new Scanner(System.in);
     CirclyList<Player> players;
@@ -27,8 +26,9 @@ public class Game {
                 return false;
             }
             if(playerNumber == 607){
-                addPlayer(new Player("a"));
-                addPlayer(new Player("b"));
+                addPlayer(new Player("a", false));
+                addPlayer(new Player("b", false));
+                addPlayer(new Player("c", true));
                 createDeck(1);
                 shuffleDeck();
                 dealCards(7);
@@ -37,7 +37,7 @@ public class Game {
             for(int i = 1; i <= playerNumber; i++){
                 System.out.println("What is the name of player " + i + "?");
                 String name = scanner.next();
-                addPlayer(new Player(name));
+                addPlayer(new Player(name, false));
             }
             System.out.println("How many decks? Choose a number between 1 and 3");
             int deckNumber = scanner.nextInt();
@@ -212,51 +212,11 @@ public class Game {
     public void createDeck(int setNumber){
         for(int i = 0; i < setNumber; i++){
             for(int j = 0; j < 4; j++){
-                for(int k = 1; k < 14; k++){
-                    deck.append(createCard(j, k));
+                for(int k = 0; k < 13; k++){
+                    deck.append(new Card(j*13+k));
                 }
             }
         }
-    }
-
-    /**
-     * Creates a card with the given suit and rank in integer format
-     * @param suit 0 = Spades, 1 = Hearts, 2 = Clubs, 3 = Diamonds
-     * @param rank 0 = Ace, 1 = 2, 2 = 3, 3 = 4, 4 = 5, 5 = 6, 6 = 7, 7 = 8, 8 = 9, 9 = 10, 10 = Jack, 11 = Queen, 12 = King
-     * @return the card created with the given suit and rank
-     */
-    public Card createCard(int suit, int rank){
-        String rankString = Integer.toString(rank);
-        String suitString = null;
-        switch (suit) {
-            case 0:
-                suitString = "Spades";
-                break;
-            case 1:
-                suitString = "Hearts";
-                break;
-            case 2:
-                suitString = "Clubs";
-                break;
-            case 3:
-                suitString = "Diamonds";
-                break;
-            }
-        switch (rank){
-                case 1:
-                    rankString = "Ace";
-                    break;
-                case 11:
-                    rankString = "Jack";
-                    break;
-                case 12:
-                    rankString = "Queen";
-                    break;
-                case 13:
-                    rankString = "King";
-                    break;
-            }
-        return new Card(rankString, suitString);
     }
 
     /**

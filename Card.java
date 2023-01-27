@@ -2,42 +2,50 @@ public class Card implements Comparable<Card>{
     private String rank;
     private String suit;
 
-    public Card(String rank, String suit) {
-        this.rank = rank;
-        this.suit = suit;
+    private int id;
+
+    public Card(int id) {
+        this.id = id;
+        rank = switch (id % 13) {
+            case 0 -> "Ace";
+            case 10 -> "Jack";
+            case 11 -> "Queen";
+            case 12 -> "King";
+            default -> Integer.toString((id % 13) + 1);
+        };
+        suit = switch ( (id - (id % 13))/ 13) {
+            case 0 -> "Spades";
+            case 1 -> "Hearts";
+            case 2 -> "Diamonds";
+            case 3 -> "Clubs";
+            default -> "Invalid";
+        };
     }
 
-    // Getters and setters
+    // Getters
     public String getRank() {
         return rank;
     }
     public String getSuit() {
         return suit;
     }
-    public void setRank(String rank) {
-        this.rank = rank;
-    } 
-    public void setSuit(String suit) {
-        this.suit = suit;
-    }
 
+    public int getId(){ return id; }
     /**
      * Check if the rank of a card is equal to the rank of another card.
      * @param other The other card to compare to.
      * @return True if the card ranks are equal, false otherwise.
      */
     public boolean equals(Card other) {
-        return (this.rank.equals(other.rank));
+        return this.rank.equals(other.rank);
     }
 
+    /**
+     * Convert the rank to an integer format
+     * @return The integer representation of the rank.
+     */
     public int rankToInt(){
-        return switch (rank) {
-            case "Ace" -> 1;
-            case "Jack" -> 11;
-            case "Queen" -> 12;
-            case "King" -> 13;
-            default -> Integer.parseInt(rank);
-        };
+        return id % 13;
     }
 
     /**
@@ -86,5 +94,4 @@ public class Card implements Comparable<Card>{
     public int compareTo(Card o) {
         return 0;
     }
-
 }

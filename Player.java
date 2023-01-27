@@ -3,9 +3,13 @@ public class Player implements Comparable<Player>{
     private CirclyList<Card> hand;
     private int finishedSets;
 
-    public Player(String name) {
+    private boolean ai;
+
+    public Player(String name, boolean ai) {
         this.name = name;
         hand = new CirclyList<Card>();
+        finishedSets = 0;
+        this.ai = ai;
     }
 
     // Getters and setters
@@ -40,7 +44,7 @@ public class Player implements Comparable<Player>{
                 count = 0;
             if(count == 3){
                 for(int j = 0; j < 4; j++){
-                    removeHand(new Card(hand.valueAt(i).getRank(), ""));
+                    removeHand(new Card(hand.valueAt(i).getId()));
                 }
                 finishedSets++;
                 System.out.println("You got a set of "+hand.valueAt(i).getRank()+"s!");
