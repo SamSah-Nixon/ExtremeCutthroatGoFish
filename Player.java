@@ -27,6 +27,9 @@ public class Player implements Comparable<Player>{
     public int getFinishedSets(){
         return finishedSets;
     }
+    public boolean isAi(){
+        return ai;
+    }
     public void setFinishedSets(int finishedSets){
         this.finishedSets = finishedSets;
     }
@@ -68,6 +71,10 @@ public class Player implements Comparable<Player>{
             }
             hand.swap(i, minIndex);
         }
+    }
+
+    public boolean equals(Player other){
+        return this.name.equals(other.name);
     }
 
     /**
@@ -119,6 +126,14 @@ public class Player implements Comparable<Player>{
         return null;
     }
 
+    public Card hasRank(int rank){
+        for(int i = 0; i< hand.size(); i++){
+            if(hand.valueAt(i).getId() % 13 == rank % 13){
+                return hand.valueAt(i);
+            }
+        }
+        return null;
+    }
     /**
      * Returns a string representation of the player.
      * @return A string representation of the player.

@@ -1,7 +1,6 @@
 public class Card implements Comparable<Card>{
     private String rank;
     private String suit;
-
     private int id;
 
     public Card(int id) {

@@ -82,6 +82,8 @@ public class Game {
      * @return true if the player takes another turn, false otherwise
      */
     public boolean turn(Player currentPlayer){
+        if(currentPlayer.isAi())
+            return aiTurn(currentPlayer);
         System.out.println(currentPlayer.getName() + "'s turn");
         currentPlayer.sortCards();
         currentPlayer.printHand();
@@ -94,7 +96,11 @@ public class Game {
                     System.out.println(players.valueAt(i).getName());
             }
             String playerName = scanner.next();
-            if(validPlayer(playerName) && playerName != currentPlayer.getName()){
+            if(playerName.equals(currentPlayer.getName())) {
+                System.out.println("You can't ask yourself!");
+                return true;
+            }
+            else if(validPlayer(playerName) && playerName != currentPlayer.getName()){
                 Player askee = findPlayer(playerName);
                 if(askee.hasRank(cardName) == null){
                     System.out.println("Go Fish!");
@@ -106,7 +112,6 @@ public class Game {
                     } else {
                         System.out.println("No more cards in deck");
                         return false;
-                        
                     }
                     return false;
                 }
@@ -129,6 +134,48 @@ public class Game {
         }
         else{
             System.out.println("Invalid card. Try again");
+            return true;
+        }
+    }
+
+    public boolean aiTurn(Player currentPlayer){
+        System.out.println("\n\n"+currentPlayer.getName()+"'s turn");
+        Player askee = null;
+        int randomRank = -1;
+        do {
+            askee = players.valueAt((int)(Math.random()*players.size()));
+        }
+        while (askee.equals(currentPlayer));
+
+        do {
+            randomRank = (int)(Math.random()*13);
+        }
+        while (currentPlayer.hasRank(randomRank) == null);
+        System.out.println(currentPlayer.getName()+" is asking "+askee.getName()+" for a "+randomRank);
+        if(!askee.hasCard(new Card(randomRank))){
+            System.out.println("Go Fish!");
+            if(deck.size() > 0){
+                pickUpCard(currentPlayer);
+                System.out.println(currentPlayer.getName()+" picked up a "+currentPlayer.getHand().rear());
+                currentPlayer.sortCards();
+                currentPlayer.checkCompleteSet();
+            } else {
+                System.out.println("No more cards in deck");
+            }
+            return false;
+        }
+        else{
+            int count = 0;
+            while(currentPlayer.hasCard(new Card(randomRank))){
+                giveCard(askee, currentPlayer, currentPlayer.hasRank(randomRank));
+                count++;
+            }
+            if(count == 1)
+                System.out.println(currentPlayer + " has a "+ randomRank + "!");
+            else
+                System.out.println(currentPlayer + " has " + count + " " + randomRank + "s!");
+            currentPlayer.sortCards();
+            currentPlayer.checkCompleteSet();
             return true;
         }
     }
