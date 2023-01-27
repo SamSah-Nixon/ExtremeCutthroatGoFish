@@ -51,10 +51,12 @@ public class Player implements Comparable<Player>{
         return null;
     }
 
+    /**
+     * Sorts the player's hand by rank.
+     */
     public void sortCards(){
-        int minIndex = 0;
         for(int i = 0; i < hand.size() - 1; i++){
-            minIndex = i;
+            int minIndex = i;
             for(int j = i + 1; j < hand.size(); j++){
                 if(hand.valueAt(j).rankToInt() < hand.valueAt(minIndex).rankToInt()){
                     minIndex = j;
@@ -66,7 +68,6 @@ public class Player implements Comparable<Player>{
 
     /**
      * Prints the player's hand.
-     * @param player the player whose hand to print
      */
     public void printHand(){
         System.out.println(getName() + "'s hand:");

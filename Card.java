@@ -27,22 +27,17 @@ public class Card implements Comparable<Card>{
      * @return True if the card ranks are equal, false otherwise.
      */
     public boolean equals(Card other) {
-        return (this.rank == other.rank);
+        return (this.rank.equals(other.rank));
     }
 
     public int rankToInt(){
-        switch(rank){
-            case "Ace":
-                return 1;
-            case "Jack":
-                return 11;
-            case "Queen":
-                return 12;
-            case "King":
-                return 13;
-            default:
-                return Integer.parseInt(rank);
-        }
+        return switch (rank) {
+            case "Ace" -> 1;
+            case "Jack" -> 11;
+            case "Queen" -> 12;
+            case "King" -> 13;
+            default -> Integer.parseInt(rank);
+        };
     }
 
     /**
@@ -52,8 +47,8 @@ public class Card implements Comparable<Card>{
      */
     public static boolean validRank(String rank){
         String[] validRanks = {"2", "3", "4", "5", "6", "7", "8", "9", "10", "Jack", "Queen", "King", "Ace"};
-        for(int i = 0; i < validRanks.length; i++){
-            if(rank.equals(validRanks[i])){
+        for (String validRank : validRanks) {
+            if (rank.equals(validRank)) {
                 return true;
             }
         }
@@ -67,8 +62,8 @@ public class Card implements Comparable<Card>{
      */
     public static boolean validSuit(String suit){
         String[] validSuits = {"Spades", "Clubs", "Diamonds", "Hearts"};
-        for(int i = 0; i < validSuits.length; i++){
-            if(suit == validSuits[i]){
+        for (String validSuit : validSuits) {
+            if (suit.equals(validSuit)) {
                 return true;
             }
         }

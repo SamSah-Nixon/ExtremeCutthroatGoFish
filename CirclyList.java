@@ -280,13 +280,13 @@ public class CirclyList<E extends Comparable<? super E>> implements MyList<E>{
     public String toString() {
         if(isEmpty())
             return "[]";
-        String string = "[";
+        StringBuilder string = new StringBuilder("[");
         DoubleNode<E> current = head.next;
         for(int i = 0; i < size; i++) {
-            string += current.info +", ";
+            string.append(current.info).append(", ");
             current = current.next;
         }
-        string = string.substring(0, string.length()-2);
+        string = new StringBuilder(string.substring(0, string.length() - 2));
         return string+"]";
     }
 
@@ -297,13 +297,13 @@ public class CirclyList<E extends Comparable<? super E>> implements MyList<E>{
     public String reverseToString() {
         if(isEmpty())
             return "[]";
-        String string = "[";
+        StringBuilder string = new StringBuilder("[");
         DoubleNode<E> current = head.prev;
         for(int i = 0; i < size; i++) {
-            string += current.info +", ";
+            string.append(current.info).append(", ");
             current = current.prev;
         }
-        string = string.substring(0, string.length()-2);
+        string = new StringBuilder(string.substring(0, string.length() - 2));
         return string+"]";
     }
 }

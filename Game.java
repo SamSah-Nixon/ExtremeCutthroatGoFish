@@ -22,12 +22,16 @@ public class Game {
                 System.out.println("Number must be greater than 1");
                 return false;
             }
-            else if(playerNumber == 607){
+            else if (playerNumber > 4 && playerNumber != 607){
+                System.out.println("Number must be less than 5");
+                return false;
+            }
+            if(playerNumber == 607){
                 addPlayer(new Player("a"));
                 addPlayer(new Player("b"));
                 createDeck(1);
                 shuffleDeck();
-                dealCards(10);
+                dealCards(7);
                 return true;
             }
             for(int i = 1; i <= playerNumber; i++){
@@ -64,9 +68,10 @@ public class Game {
         System.out.println("Starting player is " + currentPlayer.getName());
         boolean gameEnd = false;
         while(!gameEnd){
-            while(turn(currentPlayer)){
-            }
+            while(turn(currentPlayer)){}
             currentPlayer = nextPlayer(currentPlayer);
+            if(deck.size() == 0)
+                gameEnd = true;
         }
         gameEnd();
     }
@@ -202,7 +207,7 @@ public class Game {
 
     /**
      * Creates a deck with the given number of sets of cards
-     * @param deckNumber the number of sets of cards to be in the duck
+     * @param setNumber the number of sets of cards to be in the duck
      */
     public void createDeck(int setNumber){
         for(int i = 0; i < setNumber; i++){
