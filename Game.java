@@ -14,18 +14,16 @@ public class Game {
      * @return true if the game was set up successfully, false otherwise
      */
     public boolean gameSetupText(){
-        try{
-            System.out.println("How many players?");
-            int playerNumber = scanner.nextInt();
-            if(playerNumber < 2){
-                System.out.println("Number must be greater than 1");
-                return false;
+        int playerNumber = 0;
+        do{
+            try{
+                playerNumber = Integer.parseInt(ask("How many players?"));
+            } catch(Exception e){
+                System.out.println("Invalid input. Please input an integer");
             }
-            else if (playerNumber > 4 && playerNumber != 607){
-                System.out.println("Number must be less than 5");
-                return false;
-            }
-            if(playerNumber == 607){
+            if((playerNumber < 2 || playerNumber > 4) && playerNumber != 607)
+                System.out.println("Number must be greater than 1 and less than 5");
+            else if (playerNumber == 607){
                 addPlayer(new Player("a", false));
                 addPlayer(new Player("b", false));
                 addPlayer(new Player("c", true));
@@ -34,29 +32,32 @@ public class Game {
                 dealCards(7);
                 return true;
             }
-            for(int i = 1; i <= playerNumber; i++){
-                System.out.println("What is the name of player " + i + "?");
-                String name = scanner.next();
-                addPlayer(new Player(name, false));
-            }
-            System.out.println("How many decks? Choose a number between 1 and 3");
-            int deckNumber = scanner.nextInt();
-            if(deckNumber < 1 || deckNumber > 3){
-                System.out.println("Number must be between 1 and 3");
-                return false;
-            }
-            System.out.println("Game Started with " + deckNumber + " decks, "+players.size()+" players and 7 cards per player");
-            System.out.println("Player Order:");
-            for(int i = 1; i <= players.size(); i++){
-                System.out.println("Player " + i + ": " + players.valueAt(i-1).getName());
-            }
-            createDeck(deckNumber);
-            shuffleDeck();
-            dealCards(7);
-        } catch(Exception e){
-            System.out.println("Invalid input. Please input an integer");
-            return false;
+        } while (playerNumber < 2 || playerNumber > 4);
+
+        for(int i = 1; i <= playerNumber; i++){
+            String name = ask("What is the name of player " + i + "?");
+            addPlayer(new Player(name, false));
         }
+
+        int deckNumber = 0;
+        do{
+            try{
+                deckNumber = Integer.parseInt(ask("How many decks? Choose a number between 1 and 3"));
+            } catch(Exception e){
+                System.out.println("Invalid input. Please input an integer");
+            }
+            if(deckNumber < 1 || deckNumber > 3)
+                System.out.println("Number must be greater than 0 and less than 4");
+        } while (deckNumber < 1 || deckNumber > 3);
+
+        System.out.println("Game Started with " + deckNumber + " decks, "+players.size()+" players and 7 cards per player");
+        System.out.println("Player Order:");
+        for(int i = 1; i <= players.size(); i++){
+            System.out.println("Player " + i + ": " + players.valueAt(i-1).getName());
+        }
+        createDeck(deckNumber);
+        shuffleDeck();
+        dealCards(7);
         return true;
     }
     
@@ -308,5 +309,15 @@ public class Game {
     public void giveCard(Player giver, Player getter, Card card){
         giver.removeHand(card);
         getter.addHand(card);
+    }
+
+    /**
+     * Asks a question and returns the answer
+     * @param question the question to be asked
+     * @return the answer to the question
+     */
+    public String ask(String question){
+        System.out.println(question);
+        return scanner.nextLine();
     }
 }
