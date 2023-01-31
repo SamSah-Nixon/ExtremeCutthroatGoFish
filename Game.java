@@ -1,3 +1,4 @@
+import java.util.List;
 import java.util.Scanner;
 public class Game {
     Scanner scanner = new Scanner(System.in);
@@ -5,8 +6,8 @@ public class Game {
     CirclyList<Card> deck;
 
     public Game() {
-        players = new CirclyList<Player>();
-        deck = new CirclyList<Card>();
+        players = new CirclyList<>();
+        deck = new CirclyList<>();
     }
 
     /**
@@ -107,106 +108,106 @@ public class Game {
      */
     public boolean turn(Player currentPlayer) throws InterruptedException {
         Thread.sleep(250);
-        System.out.println("There are "+deck.size()+" cards left in the deck");
-        if(currentPlayer.isAi())
-            return aiTurn(currentPlayer);
-        System.out.println("\n\n"+currentPlayer.getName() + "'s turn");
+        System.out.println("\nThere are " + deck.size() + " cards left in the deck");
+        System.out.println("\n\n" + currentPlayer.getName() + "'s turn");
         currentPlayer.sortCards();
-        currentPlayer.printHand();
         Thread.sleep(1000);
-        System.out.println("\nWhat card are you looking for? (2-10, Jack, Queen, King, Ace)");
-        String cardName = scanner.next();
-        if(Card.validRank(cardName)){
-            System.out.println("Who would you like to ask?");
-            for(int i = 0; i < players.size(); i++){
-                if(players.valueAt(i) != currentPlayer)
-                    System.out.println(players.valueAt(i).getName());
-            }
-            String playerName = scanner.next();
-            if(playerName.equals(currentPlayer.getName())) {
-                System.out.println("You can't ask yourself!");
-                return true;
-            }
-            else if(validPlayer(playerName) && playerName != currentPlayer.getName()){
-                Player askee = findPlayer(playerName);
-                if(askee.hasRank(cardName) == null){
-                    System.out.println("Go Fish!");
-                    Thread.sleep(500);
-                    if(deck.size() > 0){
-                        pickUpCard(currentPlayer);
-                        System.out.println("You picked up a "+currentPlayer.getHand().rear());
-                        currentPlayer.sortCards();
-                        currentPlayer.checkCompleteSet();
-                    } else {
-                        System.out.println("No more cards in deck");
-                    }
-                    return false;
-                }
-                int count = 0;
-                while(askee.hasRank(cardName) != null){
-                    giveCard(askee, currentPlayer, askee.hasRank(cardName));
-                    count++;
-                }
-                if(count == 1)
-                    System.out.println(playerName + " has a "+ cardName + "!");
-                else
-                    System.out.println(playerName + " has " + count + " " + cardName + "s!");
-                Thread.sleep(1000);
-                currentPlayer.sortCards();
-                currentPlayer.checkCompleteSet();
-                return true;
-            } else {
-                System.out.println("Invalid player. Try again");
-                return true;
-            }
+        String cardName;
+
+        do {
+            cardName = askForCard(currentPlayer);
         }
-        else{
-            System.out.println("Invalid card. Try again");
+        while(cardName == null);
+
+        Player askee;
+        do{
+            askee = askForAskee(currentPlayer);
+        }
+        while(askee == null);
+
+        System.out.println(currentPlayer.getName() + " is asking " + askee.getName() + " for a " + cardName);
+        if (askee.hasRank(cardName) == null) {
+            System.out.println("Go Fish!");
+            Thread.sleep(500);
+            goFish(currentPlayer);
+            return false;
+        } else {
+            int count = 0;
+            while (askee.hasRank(cardName) != null) {
+                giveCard(askee, currentPlayer, askee.hasRank(cardName));
+                count++;
+            }
+            if (count == 1)
+                System.out.println(askee.getName() + " has a " + cardName + "!");
+            else
+                System.out.println(askee.getName() + " has " + count + " " + cardName + "s!");
+            Thread.sleep(1000);
+            currentPlayer.sortCards();
+            currentPlayer.checkCompleteSet();
             return true;
         }
     }
 
-    public boolean aiTurn(Player currentPlayer){
-        System.out.println("\n\n"+currentPlayer.getName()+"'s turn");
-        currentPlayer.printHand();
-        Player askee;
-        int randomRank;
-        do {
-            askee = players.valueAt((int)(Math.random()*players.size()));
-        }
-        while (askee.equals(currentPlayer));
 
-        do {
-            randomRank = (int)(Math.random()*13);
-        }
-        while (currentPlayer.hasRank(randomRank) == null);
-
-        System.out.println(currentPlayer.getName()+" is asking "+askee.getName()+" for a "+ (new Card((randomRank-1)*4).getRank()));
-        if(askee.hasRank(randomRank) == null){
-            System.out.println("Go Fish!");
-            if(deck.size() > 0){
-                pickUpCard(currentPlayer);
-                System.out.println(currentPlayer.getName()+" picked up a "+currentPlayer.getHand().rear());
-                currentPlayer.sortCards();
-                currentPlayer.checkCompleteSet();
+    public String askForCard(Player currentPlayer){
+        if(!currentPlayer.isAi()){
+            currentPlayer.printHand();
+            String cardName = ask("\nWhat card are you looking for? (2-10, Jack, Queen, King, Ace)");
+            if (Card.validRank(cardName)) {
+                return cardName;
             } else {
-                System.out.println("No more cards in deck");
+                System.out.println("Invalid card. Try again");
+                return null;
             }
-            return false;
         }
-        else{
-            int count = 0;
-            while(askee.hasRank(randomRank) != null){
-                giveCard(askee, currentPlayer, askee.hasRank(randomRank));
-                count++;
+        else {
+            int randomRank;
+            do {
+                randomRank = (int)(Math.random()*13);
             }
-            if(count == 1)
-                System.out.println(askee.getName() + " has a "+ new Card((randomRank-1)*4).getRank() + "!");
-            else
-                System.out.println(askee.getName() + " has " + count + " " + new Card((randomRank-1)*4).getRank() + "s!");
+            while (currentPlayer.hasRank(randomRank) == null);
+            return new Card((randomRank+1)*4).getRank();
+        }
+    }
+
+    public Player askForAskee(Player currentPlayer) {
+        if(!currentPlayer.isAi()) {
+            System.out.println("Who would you like to ask?");
+            //Print all players except yourself
+            for (int i = 0; i < players.size(); i++) {
+                if (players.valueAt(i) != currentPlayer)
+                    System.out.println(players.valueAt(i).getName());
+            }
+            String playerName = scanner.next();
+            //Prevent asking yourself
+            if (playerName.equals(currentPlayer.getName())) {
+                System.out.println("You can't ask yourself!");
+                return null;
+            } else if (!validPlayer(playerName)) {
+                System.out.println("Invalid player. Try again");
+                return null;
+            } else
+                return findPlayer(playerName);
+        }
+        else {
+            Player askee;
+            do {
+                askee = players.valueAt((int)(Math.random()*players.size()));
+            }
+            while (askee.equals(currentPlayer));
+            return askee;
+        }
+    }
+
+    public void goFish(Player currentPlayer){
+        String player = currentPlayer.isAi() ? currentPlayer.getName() : "You";
+        if(deck.size() > 0){
+            pickUpCard(currentPlayer);
+            System.out.println(player + " picked up a "+currentPlayer.getHand().rear());
             currentPlayer.sortCards();
             currentPlayer.checkCompleteSet();
-            return true;
+        } else {
+            System.out.println("No more cards in deck so you cannot go fish");
         }
     }
 
@@ -215,15 +216,15 @@ public class Game {
      */
     public void gameEnd(){
         System.out.println("Game Over");
-        String result = "";
+        StringBuilder result = new StringBuilder();
         int largest = 0;
         for(int i = 0; i<players.size(); i++){
             if(largest<players.valueAt(i).getFinishedSets()){
                 largest = players.valueAt(i).getFinishedSets();
-                result = players.valueAt(i).getName();
+                result = new StringBuilder(players.valueAt(i).getName());
             }
             else if(largest==players.valueAt(i).getFinishedSets()){
-                result += " and " + players.valueAt(i).getName();
+                result.append(" and ").append(players.valueAt(i).getName());
             }
         }
         System.out.println("The Winner(s) are : "+result);
@@ -346,6 +347,6 @@ public class Game {
      */
     public String ask(String question){
         System.out.println(question);
-        return scanner.nextLine();
+        return scanner.next();
     }
 }
