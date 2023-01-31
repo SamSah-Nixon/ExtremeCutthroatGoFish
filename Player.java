@@ -47,13 +47,14 @@ public class Player implements Comparable<Player>{
                 count = 0;
             if(count == 3){
                 System.out.println(name+" got a set of "+hand.valueAt(i).getRank()+"s!");
+                String removedRank = hand.valueAt(i).getRank();
                 removeHand(hand.valueAt(i));
                 removeHand(hand.valueAt(i - 1));
                 removeHand(hand.valueAt(i - 2));
                 removeHand(hand.valueAt(i - 3));
                 finishedSets++;
                 System.out.println("You now have "+finishedSets+" finished sets.");
-                return hand.valueAt(i).getRank();
+                return removedRank;
             }
         }
         return null;

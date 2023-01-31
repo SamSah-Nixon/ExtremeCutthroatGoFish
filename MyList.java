@@ -30,7 +30,7 @@ public interface MyList<E> {
   public E front();
 
   /**
-   *@return the number of objects in the current List.
+   * @return the number of objects in the current List.
    */
   public int size();
 }

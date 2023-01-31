@@ -251,6 +251,7 @@ public class CirclyList<E extends Comparable<? super E>> implements MyList<E>{
     
     /**
      * Returns the number of items in the list.
+     *
      * @return the size
      */
     public int size() {

@@ -1,4 +1,5 @@
 import java.util.Scanner;
+
 public class Game {
     Scanner scanner = new Scanner(System.in);
     CirclyList<Player> players;
@@ -116,18 +117,21 @@ public class Game {
         currentPlayer.sortCards();
         Thread.sleep(1000);
         String cardName;
-
-        do {
-            cardName = askForCard(currentPlayer);
-        }
-        while(cardName == null);
-
         Player askee;
-        do{
-            askee = askForAskee(currentPlayer);
+        if(!(currentPlayer.getHand().size() == 0)){
+            do {
+                cardName = askForCard(currentPlayer);
+            } while(cardName == null);
+            do{
+                askee = askForAskee(currentPlayer);
+            } while(askee == null);
         }
-        while(askee == null);
-
+        else{
+            System.out.println("You have no cards left. Go Fish!");
+            Thread.sleep(500);
+            goFish(currentPlayer);
+            return false;
+        }
         System.out.println(currentPlayer.getName() + " is asking " + askee.getName() + " for a " + cardName);
         if (askee.hasRank(cardName) == null) {
             System.out.println("Go Fish!");
@@ -168,8 +172,7 @@ public class Game {
             int randomRank;
             do {
                 randomRank = (int)(Math.random()*13);
-            }
-            while (currentPlayer.hasRank(randomRank) == null);
+            } while (currentPlayer.hasRank(randomRank) == null);
             return new Card((randomRank-1)*4).getRank();
         }
     }
@@ -197,8 +200,7 @@ public class Game {
             Player askee;
             do {
                 askee = players.valueAt((int)(Math.random()*players.size()));
-            }
-            while (askee.equals(currentPlayer));
+            } while (askee.equals(currentPlayer));
             return askee;
         }
     }
