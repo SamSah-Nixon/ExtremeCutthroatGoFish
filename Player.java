@@ -46,11 +46,12 @@ public class Player implements Comparable<Player>{
             else
                 count = 0;
             if(count == 3){
-                for(int j = 0; j < 4; j++){
-                    removeHand(new Card(hand.valueAt(i).getId()));
-                }
+                System.out.println(name+" got a set of "+hand.valueAt(i).getRank()+"s!");
+                removeHand(hand.valueAt(i));
+                removeHand(hand.valueAt(i - 1));
+                removeHand(hand.valueAt(i - 2));
+                removeHand(hand.valueAt(i - 3));
                 finishedSets++;
-                System.out.println("You got a set of "+hand.valueAt(i).getRank()+"s!");
                 System.out.println("You now have "+finishedSets+" finished sets.");
                 return hand.valueAt(i).getRank();
             }

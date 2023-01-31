@@ -1,4 +1,3 @@
-import java.util.List;
 import java.util.Scanner;
 public class Game {
     Scanner scanner = new Scanner(System.in);
@@ -29,6 +28,9 @@ public class Game {
             else if (playerNumber == 607){
                 addPlayer(new Player("Sam", false));
                 addPlayer(new Player("Seb", true));
+                players.valueAt(0).addHand(new Card(5));
+                players.valueAt(0).addHand(new Card(5));
+                players.valueAt(0).addHand(new Card(5));
                 createDeck(1);
                 shuffleDeck();
                 dealCards(7);
@@ -92,6 +94,7 @@ public class Game {
                 while(turn(currentPlayer)){}
             } catch(Exception e){
                 System.err.println("Error: " + e);
+                e.printStackTrace();
             }
 
             currentPlayer = nextPlayer(currentPlayer);
@@ -150,8 +153,9 @@ public class Game {
 
 
     public String askForCard(Player currentPlayer){
+        currentPlayer.printHand();
         if(!currentPlayer.isAi()){
-            currentPlayer.printHand();
+
             String cardName = ask("\nWhat card are you looking for? (2-10, Jack, Queen, King, Ace)");
             if (Card.validRank(cardName)) {
                 return cardName;
@@ -166,7 +170,7 @@ public class Game {
                 randomRank = (int)(Math.random()*13);
             }
             while (currentPlayer.hasRank(randomRank) == null);
-            return new Card((randomRank+1)*4).getRank();
+            return new Card((randomRank-1)*4).getRank();
         }
     }
 
