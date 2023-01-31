@@ -1,32 +1,28 @@
 public class Card implements Comparable<Card>{
-    private String rank;
-    private String suit;
-    private int id;
+    private final int id;
 
     public Card(int id) {
         this.id = id;
-        rank = switch (id % 13) {
-            case 0 -> "Ace";
-            case 10 -> "Jack";
-            case 11 -> "Queen";
-            case 12 -> "King";
-            default -> Integer.toString((id % 13) + 1);
-        };
-        suit = switch ( (id - (id % 13))/ 13) {
-            case 0 -> "Spades";
-            case 1 -> "Hearts";
-            case 2 -> "Diamonds";
-            case 3 -> "Clubs";
-            default -> "Invalid";
-        };
     }
 
     // Getters
     public String getRank() {
-        return rank;
+        return switch (id / 4) {
+            case 0 -> "Ace";
+            case 10 -> "Jack";
+            case 11 -> "Queen";
+            case 12 -> "King";
+            default -> Integer.toString(id / 4 + 1);
+        };
     }
     public String getSuit() {
-        return suit;
+        return switch (id % 4) {
+            case 0 -> "Spades";
+            case 1 -> "Clubs";
+            case 2 -> "Diamonds";
+            case 3 -> "Hearts";
+            default -> "Invalid suit";
+        };
     }
 
     public int getId(){ return id; }
@@ -36,15 +32,7 @@ public class Card implements Comparable<Card>{
      * @return True if the card ranks are equal, false otherwise.
      */
     public boolean equals(Card other) {
-        return this.rank.equals(other.rank);
-    }
-
-    /**
-     * Convert the rank to an integer format
-     * @return The integer representation of the rank.
-     */
-    public int rankToInt(){
-        return id % 13;
+        return (this.id % 13) == (other.id % 13);
     }
 
     /**
@@ -82,7 +70,7 @@ public class Card implements Comparable<Card>{
      * @return A string representation of the card.
      */
     public String toString() {
-        return rank + " of " + suit;
+        return getRank() + " of " + getSuit();
     }
 
     /**

@@ -3,7 +3,7 @@ public class Player implements Comparable<Player>{
     private CirclyList<Card> hand;
     private int finishedSets;
 
-    private boolean ai;
+    private final boolean ai;
 
     public Player(String name, boolean ai) {
         this.name = name;
@@ -65,7 +65,7 @@ public class Player implements Comparable<Player>{
         for(int i = 0; i < hand.size() - 1; i++){
             int minIndex = i;
             for(int j = i + 1; j < hand.size(); j++){
-                if(hand.valueAt(j).rankToInt() < hand.valueAt(minIndex).rankToInt()){
+                if(hand.valueAt(j).getId() < hand.valueAt(minIndex).getId()){
                     minIndex = j;
                 }
             }
@@ -82,9 +82,15 @@ public class Player implements Comparable<Player>{
      */
     public void printHand(){
         System.out.println(getName() + "'s hand:");
-        for(int i = 0; i < getHand().size(); i++){
-            System.out.println(getHand().valueAt(i)+", ");
+        String prevRank = "";
+        for(int i = 0; i < hand.size(); i++){
+            if(prevRank.equals(hand.valueAt(i).getRank()))
+                System.out.print(hand.valueAt(i)+", ");
+            else
+                System.out.print("\n"+hand.valueAt(i)+", ");
+            prevRank = hand.valueAt(i).getRank();
         }
+        System.out.println();
     }
 
     /**
@@ -128,7 +134,7 @@ public class Player implements Comparable<Player>{
 
     public Card hasRank(int rank){
         for(int i = 0; i< hand.size(); i++){
-            if(hand.valueAt(i).getId() % 13 == rank % 13){
+            if(hand.valueAt(i).getId() / 4 + 1 == rank){
                 return hand.valueAt(i);
             }
         }
