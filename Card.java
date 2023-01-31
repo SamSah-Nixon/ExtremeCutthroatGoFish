@@ -26,14 +26,7 @@ public class Card implements Comparable<Card>{
     }
 
     public int getId(){ return id; }
-    /**
-     * Check if the rank of a card is equal to the rank of another card.
-     * @param other The other card to compare to.
-     * @return True if the card ranks are equal, false otherwise.
-     */
-    public boolean equals(Card other) {
-        return (this.id % 13) == (other.id % 13);
-    }
+
 
     /**
      * Check if the rank is valid.
@@ -44,21 +37,6 @@ public class Card implements Comparable<Card>{
         String[] validRanks = {"2", "3", "4", "5", "6", "7", "8", "9", "10", "Jack", "Queen", "King", "Ace"};
         for (String validRank : validRanks) {
             if (rank.equals(validRank)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
-     * Check if the suit is valid.
-     * @param suit The suit to check.
-     * @return True if the suit is valid, false otherwise.
-     */
-    public static boolean validSuit(String suit){
-        String[] validSuits = {"Spades", "Clubs", "Diamonds", "Hearts"};
-        for (String validSuit : validSuits) {
-            if (suit.equals(validSuit)) {
                 return true;
             }
         }
