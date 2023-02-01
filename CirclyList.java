@@ -1,8 +1,8 @@
 /*
  * Sam Sah-Nixon
  * Date Created: 1/10/23
- * Last Modified: 1/10/23
- * Description: A circulry linked list
+ * Last Modified: 1/27/23
+ * Description: A circly linked list
  */
 import java.util.ArrayList;
 
@@ -296,15 +296,15 @@ public class CirclyList<E extends Comparable<? super E>> implements MyList<E>{
      * @return a string version of the list but backwards
      */
     public String reverseToString() {
-        if(isEmpty())
+        if (isEmpty())
             return "[]";
         StringBuilder string = new StringBuilder("[");
         DoubleNode<E> current = head.prev;
-        for(int i = 0; i < size; i++) {
+        for (int i = 0; i < size; i++) {
             string.append(current.info).append(", ");
             current = current.prev;
         }
         string = new StringBuilder(string.substring(0, string.length() - 2));
-        return string+"]";
+        return string + "]";
     }
 }

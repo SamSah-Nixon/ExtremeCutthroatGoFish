@@ -1,6 +1,13 @@
+/*
+ * Sam Sah-Nixon
+ * Date Created: 01/27/23
+ * Last Modified: 02/01/23
+ * Description: A class that represents a player.
+ */
 public class Player implements Comparable<Player>{
     private final String name;
     private CirclyList<Card> hand;
+    // The number of sets the player has completed
     private int finishedSets;
 
     private final boolean ai;

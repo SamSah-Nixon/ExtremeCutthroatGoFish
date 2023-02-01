@@ -1,3 +1,9 @@
+/*
+ * Sam Sah-Nixon
+ * Date Created: 01/27/23
+ * Last Modified: 01/27/23
+ * Description: The class that runs the game. Contains the methods for setting up the game and running the game
+ */
 import java.util.Scanner;
 
 public class Game {
@@ -14,9 +20,8 @@ public class Game {
 
     /**
      * Sets up a game of go fish by asking the amount of players and decks to be used
-     * @return true if the game was set up successfully, false otherwise
      */
-    public boolean gameSetupText(){
+    public void gameSetupText(){
         int playerNumber = 0;
         //Ask for number of players
         do{
@@ -31,13 +36,10 @@ public class Game {
             else if (playerNumber == 607){
                 addPlayer(new Player("Sam", false));
                 addPlayer(new Player("Seb", true));
-                players.valueAt(0).addHand(new Card(5));
-                players.valueAt(0).addHand(new Card(5));
-                players.valueAt(0).addHand(new Card(5));
                 createDeck(1);
                 shuffleDeck();
-                dealCards(7);
-                return true;
+                dealCards(25);
+                return;
             }
         } while (playerNumber < 1 || playerNumber > 4);
 
@@ -95,7 +97,6 @@ public class Game {
         createDeck(deckNumber);
         shuffleDeck();
         dealCards(7);
-        return true;
     }
     
     /**
@@ -110,6 +111,7 @@ public class Game {
         //This runs until the deck is empty
         while(!gameEnd){
             try{
+                anotherTurn = true;
                 //If turn returns true then the player takes another turn
                 //Else switch to the next player and run again
                 while(anotherTurn)
@@ -118,10 +120,25 @@ public class Game {
                 System.err.println("Error: " + e);
             }
             currentPlayer = nextPlayer();
-            if(deck.size() == 0)
+            if(checkEndGame()) {
                 gameEnd = true;
+                gameEnd();
+            }
         }
-        gameEnd();
+    }
+
+    /**
+     * Checks if the game has ended
+     * @return true if the game has ended, false otherwise
+     */
+    private boolean checkEndGame() {
+        if(deck.size() != 0)
+            return false;
+        for(int i = 0; i < players.size(); i++){
+            if(players.valueAt(i).getHand().size() != 0)
+                return false;
+        }
+        return true;
     }
 
     /**
@@ -133,16 +150,18 @@ public class Game {
         System.out.println("\nThere are " + deck.size() + " cards left in the deck");
         System.out.println("\n\n" + currentPlayer.getName() + "'s turn");
         currentPlayer.sortCards();
-        Thread.sleep(1000);
         String cardName;
         //Askee = the player you are asking a card for
         Player askee;
         //Gets the card and the player to ask for if the player has cards left
         if(!(currentPlayer.getHand().size() == 0)){
             do {
+                Thread.sleep(500);
                 cardName = askForCard();
+
             } while(cardName == null);
             do{
+                Thread.sleep(500);
                 askee = askForAskee();
             } while(askee == null);
         }
@@ -182,10 +201,14 @@ public class Game {
         if(!currentPlayer.isAi()){
             currentPlayer.printHand();
             String cardName = ask("\nWhat card are you looking for? (2-10, Jack, Queen, King, Ace)");
-            if (Card.validRank(cardName)) {
+            if (Card.validRank(cardName) && currentPlayer.hasRank(cardName) != null) {
                 return cardName;
-            } else {
+            } else if (!Card.validRank(cardName)) {
                 System.out.println("Invalid card. Try again");
+                return null;
+            }
+            else {
+                System.out.println("You don't have that card. Try again");
                 return null;
             }
         }
@@ -228,10 +251,14 @@ public class Game {
 
     public void goFish(){
         //Addresses the player as "you" if they are not an AI
-        String player = currentPlayer.isAi() ? currentPlayer.getName() : "You";
         if(deck.size() > 0){
             pickUpCard(currentPlayer);
-            System.out.println(player + " picked up a "+currentPlayer.getHand().rear());
+            if(!currentPlayer.isAi()){
+                System.out.println("You picked up a "+currentPlayer.getHand().rear());
+            }
+            else {
+                System.out.println(currentPlayer.getName() + " picked up a card");
+            }
             currentPlayer.sortCards();
             currentPlayer.checkCompleteSet();
         } else {
