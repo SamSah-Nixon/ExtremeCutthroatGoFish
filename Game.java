@@ -7,7 +7,6 @@
 import java.util.Scanner;
 
 public class Game {
-    Scanner scanner = new Scanner(System.in);
     CirclyList<Player> players;
     CirclyList<Card> deck;
     Player currentPlayer;
@@ -30,17 +29,8 @@ public class Game {
             } catch(Exception e){
                 System.out.println("Invalid input. Please input an integer");
             }
-            if((playerNumber < 1 || playerNumber > 4) && playerNumber != 607)
+            if(playerNumber < 1 || playerNumber > 4)
                 System.out.println("Number must be greater than 0 and less than 5");
-            //For testing purposes
-            else if (playerNumber == 607){
-                addPlayer(new Player("Sam", false));
-                addPlayer(new Player("Seb", true));
-                createDeck(1);
-                shuffleDeck();
-                dealCards(25);
-                return;
-            }
         } while (playerNumber < 1 || playerNumber > 4);
 
         //Ask for number of AI players
@@ -107,7 +97,7 @@ public class Game {
         currentPlayer = players.valueAt((int)(Math.random()*players.size()));
         System.out.println("Starting player is " + currentPlayer.getName());
         boolean gameEnd = false;
-        boolean anotherTurn = true;
+        boolean anotherTurn;
         //This runs until the deck is empty
         while(!gameEnd){
             try{
@@ -128,22 +118,9 @@ public class Game {
     }
 
     /**
-     * Checks if the game has ended
-     * @return true if the game has ended, false otherwise
-     */
-    private boolean checkEndGame() {
-        if(deck.size() != 0)
-            return false;
-        for(int i = 0; i < players.size(); i++){
-            if(players.valueAt(i).getHand().size() != 0)
-                return false;
-        }
-        return true;
-    }
-
-    /**
      * Runs a turn of one player
      * @return true if the player takes another turn, false otherwise
+     * @throws InterruptedException if the thread is interrupted while sleeping
      */
     public boolean turn() throws InterruptedException {
         Thread.sleep(250);
@@ -158,7 +135,6 @@ public class Game {
             do {
                 Thread.sleep(500);
                 cardName = askForCard();
-
             } while(cardName == null);
             do{
                 Thread.sleep(500);
@@ -196,9 +172,12 @@ public class Game {
         }
     }
 
-
+    /**
+     * Asks the player for the rank of a card they want to ask for
+     * @return the rank of the card
+     */
     public String askForCard(){
-        if(!currentPlayer.isAi()){
+        if(currentPlayer.isReal()){
             currentPlayer.printHand();
             String cardName = ask("\nWhat card are you looking for? (2-10, Jack, Queen, King, Ace)");
             if (Card.validRank(cardName) && currentPlayer.hasRank(cardName) != null) {
@@ -214,22 +193,26 @@ public class Game {
         }
         else {
             int randomRank;
-            do {
+            do
                 randomRank = (int)(Math.random()*13);
-            } while (currentPlayer.hasRank(randomRank) == null);
+                while (currentPlayer.hasRank(randomRank) == null);
             return new Card((randomRank-1)*4).getRank();
         }
     }
 
+    /**
+     * Asks the player who they would like to ask for a card
+     * @return the player they would like to ask
+     */
     public Player askForAskee() {
-        if(!currentPlayer.isAi()) {
+        if(currentPlayer.isReal()) {
             System.out.println("Who would you like to ask?");
             //Print all players except yourself
             for (int i = 0; i < players.size(); i++) {
                 if (players.valueAt(i) != currentPlayer)
                     System.out.println(players.valueAt(i).getName());
             }
-            String playerName = scanner.next();
+            String playerName = ask("");
             //Prevent asking yourself
             if (playerName.equals(currentPlayer.getName())) {
                 System.out.println("You can't ask yourself!");
@@ -242,18 +225,21 @@ public class Game {
         }
         else {
             Player askee;
-            do {
+            do
                 askee = players.valueAt((int)(Math.random()*players.size()));
-            } while (askee.equals(currentPlayer));
+                while (askee.equals(currentPlayer));
             return askee;
         }
     }
 
+    /**
+     * Makes the current player pick up a card from the deck
+     */
     public void goFish(){
         //Addresses the player as "you" if they are not an AI
         if(deck.size() > 0){
             pickUpCard(currentPlayer);
-            if(!currentPlayer.isAi()){
+            if(currentPlayer.isReal()){
                 System.out.println("You picked up a "+currentPlayer.getHand().rear());
             }
             else {
@@ -264,6 +250,20 @@ public class Game {
         } else {
             System.out.println("No more cards in deck so you cannot go fish");
         }
+    }
+
+    /**
+     * Checks if the game has ended
+     * @return true if the game has ended, false otherwise
+     */
+    private boolean checkEndGame() {
+        if(deck.size() != 0)
+            return false;
+        for(int i = 0; i < players.size(); i++){
+            if(players.valueAt(i).getHand().size() != 0)
+                return false;
+        }
+        return true;
     }
 
     /**
@@ -394,6 +394,7 @@ public class Game {
      */
     public String ask(String question){
         System.out.println(question);
+        Scanner scanner = new Scanner(System.in);
         return scanner.next();
     }
 }

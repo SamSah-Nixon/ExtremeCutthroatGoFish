@@ -7,6 +7,7 @@
 public class Player implements Comparable<Player>{
     private final String name;
     private CirclyList<Card> hand;
+
     // The number of sets the player has completed
     private int finishedSets;
 
@@ -30,8 +31,8 @@ public class Player implements Comparable<Player>{
     public int getFinishedSets(){
         return finishedSets;
     }
-    public boolean isAi(){
-        return ai;
+    public boolean isReal(){
+        return !ai;
     }
 
     /**
@@ -44,8 +45,10 @@ public class Player implements Comparable<Player>{
                 count++;
             else
                 count = 0;
+            //If there are 3 cards of the same rank in a row, then remove them from the player's hand
             if(count == 3){
                 System.out.println(name+" got a set of "+hand.valueAt(i).getRank()+"s!");
+                //Remove the 4 cards from the player's hand
                 removeHand(hand.valueAt(i));
                 removeHand(hand.valueAt(i - 1));
                 removeHand(hand.valueAt(i - 2));
@@ -72,6 +75,11 @@ public class Player implements Comparable<Player>{
         }
     }
 
+    /**
+     * Compares 2 players by their name.
+     * @param other the other player to compare to
+     * @return true if the player has the same name as the other player, false otherwise
+     */
     public boolean equals(Player other){
         return this.name.equals(other.name);
     }

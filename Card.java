@@ -5,13 +5,15 @@
  * Description: A class that represents a card.
  */
 public class Card implements Comparable<Card>{
+
+    // The id of the card. The sorting of the id starts with the lowest ranks coming first priority, then the suits.
     private final int id;
 
     public Card(int id) {
         this.id = id;
     }
 
-    // Getters
+    // Special Getters
     public String getRank() {
         return switch (id / 4) {
             case 0 -> "Ace";
@@ -30,7 +32,7 @@ public class Card implements Comparable<Card>{
             default -> "Invalid suit";
         };
     }
-
+    // Getters
     public int getId(){ return id; }
 
 

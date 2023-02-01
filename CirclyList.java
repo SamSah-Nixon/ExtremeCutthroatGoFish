@@ -8,25 +8,25 @@ import java.util.ArrayList;
 
 public class CirclyList<E extends Comparable<? super E>> implements MyList<E>{
     
-    private DoubleNode<E> head;
+    private CirclyNode<E> head;
     private int size;
     
     public CirclyList(){
-        head = new DoubleNode<E>();
+        head = new CirclyNode<>();
         size = 0;
     }
 
-    private static class DoubleNode<E>{
+    private static class CirclyNode<E>{
         private E info;
-        private DoubleNode<E> prev;
-        private DoubleNode<E> next;
+        private CirclyNode<E> prev;
+        private CirclyNode<E> next;
 
-        public DoubleNode(){
+        public CirclyNode(){
             info = null;
             prev = null;
             next = null;
         }
-        public DoubleNode(E info, DoubleNode<E> prev, DoubleNode<E> next){
+        public CirclyNode(E info, CirclyNode<E> prev, CirclyNode<E> next){
             this.info = info;
             this.prev = prev;
             this.next = next;
@@ -58,12 +58,12 @@ public class CirclyList<E extends Comparable<? super E>> implements MyList<E>{
         //Make sure the position is not greater that the size
         if(pos > size || pos < 0)
             return;
-        DoubleNode<E> current = head;
+        CirclyNode<E> current = head;
         //Navigate to the node before the new node
         for(int i = 0; i < pos; i++){
             current = current.next;
         }
-        current.next = new DoubleNode<E>(item, current, current.next);
+        current.next = new CirclyNode<>(item, current, current.next);
         if(size == 0 || pos == size){
             head.prev = current.next;
         }
@@ -121,7 +121,7 @@ public class CirclyList<E extends Comparable<? super E>> implements MyList<E>{
     public E pop(int pos) {
         if(pos >= size || pos < 0)
             return null;
-        DoubleNode<E> current = head.next;
+        CirclyNode<E> current = head.next;
         //Navigate to the node to be removed
         for(int i = 0; i < pos; i++){
             current = current.next;
@@ -154,7 +154,7 @@ public class CirclyList<E extends Comparable<? super E>> implements MyList<E>{
     public void swap(int index1, int index2){
         E temp = valueAt(index1);
         E temp2 = valueAt(index2);
-        DoubleNode<E> current = head.next;
+        CirclyNode<E> current = head.next;
         for(int i = 0; i < index1; i++){
             current = current.next;
         }
@@ -172,7 +172,7 @@ public class CirclyList<E extends Comparable<? super E>> implements MyList<E>{
      * @return The position of the item or -1 if not found
      */
     public int indexOf(E item){
-        DoubleNode<E> current = head.next;
+        CirclyNode<E> current = head.next;
         int index = 0;
         for(int i = 0; i < size; i++){
             if(current.info.equals(item))
@@ -190,7 +190,7 @@ public class CirclyList<E extends Comparable<? super E>> implements MyList<E>{
      */
     public ArrayList<Integer> indicesOf(E item) {
         ArrayList<Integer> list = new ArrayList<>();
-        DoubleNode<E> current = head.next;
+        CirclyNode<E> current = head.next;
         int index = 0;
         for(int i = 0; i < size; i++){
             if(current.info.equals(item))
@@ -209,7 +209,7 @@ public class CirclyList<E extends Comparable<? super E>> implements MyList<E>{
     public E valueAt(int pos) {
         if(pos >= size || pos < 0)
             return null;
-        DoubleNode<E> current = head.next;
+        CirclyNode<E> current = head.next;
         for(int i = 0; i < pos; i++){
             current = current.next;
         }
@@ -264,7 +264,7 @@ public class CirclyList<E extends Comparable<? super E>> implements MyList<E>{
      * @return the next item in the list
      */
     public E next(E item) {
-        DoubleNode<E> current = head.next;
+        CirclyNode<E> current = head.next;
         for(int i = 0; i < size; i++) {
             if(current.info.equals(item)) {
                 return current.next.info;
@@ -282,7 +282,7 @@ public class CirclyList<E extends Comparable<? super E>> implements MyList<E>{
         if(isEmpty())
             return "[]";
         StringBuilder string = new StringBuilder("[");
-        DoubleNode<E> current = head.next;
+        CirclyNode<E> current = head.next;
         for(int i = 0; i < size; i++) {
             string.append(current.info).append(", ");
             current = current.next;
@@ -299,7 +299,7 @@ public class CirclyList<E extends Comparable<? super E>> implements MyList<E>{
         if (isEmpty())
             return "[]";
         StringBuilder string = new StringBuilder("[");
-        DoubleNode<E> current = head.prev;
+        CirclyNode<E> current = head.prev;
         for (int i = 0; i < size; i++) {
             string.append(current.info).append(", ");
             current = current.prev;
