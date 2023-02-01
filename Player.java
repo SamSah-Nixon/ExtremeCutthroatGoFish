@@ -1,5 +1,5 @@
 public class Player implements Comparable<Player>{
-    private String name;
+    private final String name;
     private CirclyList<Card> hand;
     private int finishedSets;
 
@@ -7,7 +7,7 @@ public class Player implements Comparable<Player>{
 
     public Player(String name, boolean ai) {
         this.name = name;
-        hand = new CirclyList<Card>();
+        hand = new CirclyList<>();
         finishedSets = 0;
         this.ai = ai;
     }
@@ -15,10 +15,6 @@ public class Player implements Comparable<Player>{
     // Getters and setters
     public String getName() {
         return name;
-    }
-    
-    public void setName(String name) {
-        this.name = name;
     }
 
     public CirclyList<Card> getHand() {
@@ -30,15 +26,11 @@ public class Player implements Comparable<Player>{
     public boolean isAi(){
         return ai;
     }
-    public void setFinishedSets(int finishedSets){
-        this.finishedSets = finishedSets;
-    }
 
     /**
      * Checks if a player has 4 of the same rank card. If so, then remove it from the deck
-     * @return the rank of the set that was removed and null of no rank was removed
      */
-    public String checkCompleteSet(){
+    public void checkCompleteSet(){
         int count = 0;
         for(int i = 1; i < hand.size(); i++){
             if(hand.valueAt(i).getRank().equals(hand.valueAt(i-1).getRank()))
@@ -47,17 +39,15 @@ public class Player implements Comparable<Player>{
                 count = 0;
             if(count == 3){
                 System.out.println(name+" got a set of "+hand.valueAt(i).getRank()+"s!");
-                String removedRank = hand.valueAt(i).getRank();
                 removeHand(hand.valueAt(i));
                 removeHand(hand.valueAt(i - 1));
                 removeHand(hand.valueAt(i - 2));
                 removeHand(hand.valueAt(i - 3));
                 finishedSets++;
                 System.out.println("You now have "+finishedSets+" finished sets.");
-                return removedRank;
+                return;
             }
         }
-        return null;
     }
 
     /**
@@ -109,15 +99,6 @@ public class Player implements Comparable<Player>{
      */
     public void removeHand(Card card) {
         this.hand.remove(card);
-    }
-
-    /**
-     * Returns true if the player has the card in their hand.
-     * @param card the card to check for
-     * @return true if the player has the card in their hand, false otherwise
-     */
-    public boolean hasCard(Card card) {
-        return this.hand.contains(card);
     }
 
     /**

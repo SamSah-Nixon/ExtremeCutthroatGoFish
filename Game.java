@@ -4,10 +4,12 @@ public class Game {
     Scanner scanner = new Scanner(System.in);
     CirclyList<Player> players;
     CirclyList<Card> deck;
+    Player currentPlayer;
 
     public Game() {
         players = new CirclyList<>();
         deck = new CirclyList<>();
+        currentPlayer = null;
     }
 
     /**
@@ -19,7 +21,7 @@ public class Game {
         //Ask for number of players
         do{
             try{
-                playerNumber = Integer.parseInt(ask("How many players?"));
+                playerNumber = Integer.parseInt(ask("How many real players?"));
             } catch(Exception e){
                 System.out.println("Invalid input. Please input an integer");
             }
@@ -47,16 +49,29 @@ public class Game {
             } catch(Exception e){
                 System.out.println("Invalid input. Please input an integer");
             }
-            if(aiNumber + playerNumber > 4 || aiNumber + playerNumber < 1)
+            if(aiNumber + playerNumber > 4 || aiNumber + playerNumber < 2)
                 System.out.println("Number of all players must be greater than 1 and less than 5");
-        } while (aiNumber + playerNumber > 4 || aiNumber + playerNumber < 1);
+        } while (aiNumber + playerNumber > 4 || aiNumber + playerNumber < 2);
 
         //Ask for names of players
-        for(int i = 1; i <= playerNumber; i++){
-            addPlayer(new Player(ask("What is the name of player " + i + "?"), false));
+        String name;
+        for(int i = 1; i <= playerNumber; i++) {
+            name = ask("What is the name of player " + i + "?");
+            if (notValidPlayer(name))
+                addPlayer(new Player(name, false));
+            else{
+                System.out.println("Name already taken. Please choose another name");
+                i--;
+            }
         }
         for(int i = 1; i <= aiNumber; i++){
-            addPlayer(new Player(ask("What is the name of the AI player " + i + "?"), true));
+            name = ask("What is the name of AI player " + i + "?");
+            if(notValidPlayer(name))
+                addPlayer(new Player(name, true));
+            else {
+                System.out.println("Name already taken. Please choose another name");
+                i--;
+            }
         }
 
         //Ask for number of decks
@@ -87,18 +102,22 @@ public class Game {
      * Runs the game
      */
     public void playGame() {
-        Player currentPlayer = players.valueAt((int)(Math.random()*players.size()));
+        //Choose random starting player
+        currentPlayer = players.valueAt((int)(Math.random()*players.size()));
         System.out.println("Starting player is " + currentPlayer.getName());
         boolean gameEnd = false;
+        boolean anotherTurn = true;
+        //This runs until the deck is empty
         while(!gameEnd){
             try{
-                while(turn(currentPlayer)){}
+                //If turn returns true then the player takes another turn
+                //Else switch to the next player and run again
+                while(anotherTurn)
+                    anotherTurn = turn();
             } catch(Exception e){
                 System.err.println("Error: " + e);
-                e.printStackTrace();
             }
-
-            currentPlayer = nextPlayer(currentPlayer);
+            currentPlayer = nextPlayer();
             if(deck.size() == 0)
                 gameEnd = true;
         }
@@ -107,39 +126,42 @@ public class Game {
 
     /**
      * Runs a turn of one player
-     * @param currentPlayer the player whose turn it is
      * @return true if the player takes another turn, false otherwise
      */
-    public boolean turn(Player currentPlayer) throws InterruptedException {
+    public boolean turn() throws InterruptedException {
         Thread.sleep(250);
         System.out.println("\nThere are " + deck.size() + " cards left in the deck");
         System.out.println("\n\n" + currentPlayer.getName() + "'s turn");
         currentPlayer.sortCards();
         Thread.sleep(1000);
         String cardName;
+        //Askee = the player you are asking a card for
         Player askee;
+        //Gets the card and the player to ask for if the player has cards left
         if(!(currentPlayer.getHand().size() == 0)){
             do {
-                cardName = askForCard(currentPlayer);
+                cardName = askForCard();
             } while(cardName == null);
             do{
-                askee = askForAskee(currentPlayer);
+                askee = askForAskee();
             } while(askee == null);
         }
         else{
             System.out.println("You have no cards left. Go Fish!");
             Thread.sleep(500);
-            goFish(currentPlayer);
+            goFish();
             return false;
         }
         System.out.println(currentPlayer.getName() + " is asking " + askee.getName() + " for a " + cardName);
+        //If they don't have the card then go fish
         if (askee.hasRank(cardName) == null) {
             System.out.println("Go Fish!");
             Thread.sleep(500);
-            goFish(currentPlayer);
+            goFish();
             return false;
         } else {
             int count = 0;
+            //While the player has the card, give it to the current player and count how many they have taken
             while (askee.hasRank(cardName) != null) {
                 giveCard(askee, currentPlayer, askee.hasRank(cardName));
                 count++;
@@ -156,10 +178,9 @@ public class Game {
     }
 
 
-    public String askForCard(Player currentPlayer){
-        currentPlayer.printHand();
+    public String askForCard(){
         if(!currentPlayer.isAi()){
-
+            currentPlayer.printHand();
             String cardName = ask("\nWhat card are you looking for? (2-10, Jack, Queen, King, Ace)");
             if (Card.validRank(cardName)) {
                 return cardName;
@@ -177,7 +198,7 @@ public class Game {
         }
     }
 
-    public Player askForAskee(Player currentPlayer) {
+    public Player askForAskee() {
         if(!currentPlayer.isAi()) {
             System.out.println("Who would you like to ask?");
             //Print all players except yourself
@@ -190,7 +211,7 @@ public class Game {
             if (playerName.equals(currentPlayer.getName())) {
                 System.out.println("You can't ask yourself!");
                 return null;
-            } else if (!validPlayer(playerName)) {
+            } else if (notValidPlayer(playerName)) {
                 System.out.println("Invalid player. Try again");
                 return null;
             } else
@@ -205,7 +226,8 @@ public class Game {
         }
     }
 
-    public void goFish(Player currentPlayer){
+    public void goFish(){
+        //Addresses the player as "you" if they are not an AI
         String player = currentPlayer.isAi() ? currentPlayer.getName() : "You";
         if(deck.size() > 0){
             pickUpCard(currentPlayer);
@@ -224,6 +246,7 @@ public class Game {
         System.out.println("Game Over");
         StringBuilder result = new StringBuilder();
         int largest = 0;
+        //Go through every player and find who has the most finished sets
         for(int i = 0; i<players.size(); i++){
             if(largest<players.valueAt(i).getFinishedSets()){
                 largest = players.valueAt(i).getFinishedSets();
@@ -238,25 +261,24 @@ public class Game {
 
     /**
      *  Moves to the next player
-     *  @param player the current player
      *  @return the next player
      */
-    public Player nextPlayer(Player player){
-        return players.next(player);
+    public Player nextPlayer(){
+        return players.next(currentPlayer);
     }
     
     /**
      * Checks to see if a string is the name of a valid player in the game
      * @param playerName the string to check
-     * @return true if the string is the name of a valid player, false otherwise
+     * @return false if the string is the name of a valid player, true otherwise
      */
-    public boolean validPlayer(String playerName){
+    public boolean notValidPlayer(String playerName){
         for(int i = 0; i < players.size(); i++){
             if(players.valueAt(i).getName().equals(playerName)){
-                return true;
+                return false;
             }
         }
-        return false;
+        return true;
     }
 
     /**
@@ -265,14 +287,6 @@ public class Game {
      */
     public void addPlayer(Player player) {
         players.append(player);
-    }
-
-    /**
-     * Removes a player from the game
-     * @param player the player to be removed
-     */
-    public void removePlayer(Player player) {
-        players.remove(player);
     }
 
     /**
@@ -305,7 +319,7 @@ public class Game {
      * Shuffles the deck
      */
     public void shuffleDeck(){
-        CirclyList<Card> shuffled = new CirclyList<Card>();
+        CirclyList<Card> shuffled = new CirclyList<>();
         int deckSize = deck.size();
         for(int i = 0; i < deckSize; i++){
             int random = (int)(Math.random() * deck.size());
