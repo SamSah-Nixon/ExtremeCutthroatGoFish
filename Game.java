@@ -136,8 +136,9 @@ public class Game {
             int count = 0;
             //While the player has the card, give it to the current player and count how many they have taken
             while (askee.hasRank(cardName) != null) {
-                askee.removeHand(askee.hasRank(cardName));
-                currentPlayer.addHand(askee.hasRank(cardName));
+                Card swapCard = askee.hasRank(cardName);
+                askee.removeHand(swapCard);
+                currentPlayer.addHand(swapCard);
                 count++;
             }
             if (count == 1)
