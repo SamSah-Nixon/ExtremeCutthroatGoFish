@@ -91,6 +91,7 @@ public class Game {
                     anotherTurn = turn();
             } catch(Exception e){
                 System.err.println("Error: " + e);
+                e.printStackTrace();
             }
             currentPlayer = players.next(currentPlayer);
             if(checkEndGame()) {
@@ -108,19 +109,23 @@ public class Game {
     public boolean turn() throws InterruptedException {
         System.out.println("\nThere are " + deck.size() + " cards left in the deck");
         System.out.println("\n\n" + currentPlayer.getName() + "'s turn");
+        Thread.sleep(750);
         currentPlayer.sortCards();
         String cardName;
         //Askee = the player you are asking a card for
         Player askee;
         //Gets the card and the player to ask for if the player has cards left
-        do {
-            Thread.sleep(500);
-            cardName = askForCard();
-        } while(cardName == null);
-        do{
-            Thread.sleep(500);
-            askee = askForAskee();
-        } while(askee == null);
+        if(currentPlayer.getHand().size() != 0) {
+            do {
+                cardName = askForCard();
+            } while (cardName == null);
+            do {
+                askee = askForAskee();
+            } while (askee == null);
+        }
+        else {
+            return false;
+        }
         System.out.println(currentPlayer.getName() + " is asking " + askee.getName() + " for a " + cardName);
         //If they don't have the card then go fish
         if (askee.hasRank(cardName) == null) {
