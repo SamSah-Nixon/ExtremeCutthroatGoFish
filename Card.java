@@ -1,7 +1,7 @@
 /*
  * Sam Sah-Nixon
  * Date Created: 01/27/23
- * Last Modified: 02/01/23
+ * Last Modified: 02/02/23
  * Description: A class that represents a card.
  */
 public class Card implements Comparable<Card>{

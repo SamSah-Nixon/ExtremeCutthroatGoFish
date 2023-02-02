@@ -23,7 +23,7 @@ public class Game {
     public void gameSetupText(){
         System.out.println("Welcome to Go Fish!");
         System.out.println("Input Q to quit at any time.");
-        addPlayer(new Player(ask("What is your name?"), false));
+        players.append(new Player(ask("What is your name?"), false));
 
         //Ask for number of AI players
         int aiNumber = 0;
@@ -42,7 +42,7 @@ public class Game {
         for(int i = 1; i <= aiNumber; i++){
             name = ask("What is the name of AI player " + i + "?");
             if(notValidPlayer(name))
-                addPlayer(new Player(name, true));
+                players.append(new Player(name, true));
             else {
                 System.out.println("Name already taken. Please choose another name");
                 i--;
@@ -92,7 +92,7 @@ public class Game {
             } catch(Exception e){
                 System.err.println("Error: " + e);
             }
-            currentPlayer = nextPlayer();
+            currentPlayer = players.next(currentPlayer);
             if(checkEndGame()) {
                 gameEnd = true;
                 gameEnd();
@@ -201,7 +201,7 @@ public class Game {
             Player askee;
             do
                 askee = players.valueAt((int)(Math.random()*players.size()));
-                while (askee.equals(currentPlayer));
+                while (askee.getName().equals(currentPlayer.getName()));
             return askee;
         }
     }
@@ -212,7 +212,7 @@ public class Game {
     public void goFish(){
         //Addresses the player as "you" if they are not an AI
         if(deck.size() > 0){
-            pickUpCard(currentPlayer);
+            currentPlayer.addHand(deck.pop());
             if(currentPlayer.isReal()){
                 System.out.println("You picked up a "+currentPlayer.getHand().rear());
             }
@@ -255,15 +255,7 @@ public class Game {
                 result.append(" and ").append(players.valueAt(i).getName());
             }
         }
-        System.out.println("The Winner(s) are : "+result);
-    }
-
-    /**
-     *  Moves to the next player
-     *  @return the next player
-     */
-    public Player nextPlayer(){
-        return players.next(currentPlayer);
+        System.out.println("The Winner(s) are : "+result +" with "+largest+" sets!");
     }
     
     /**
@@ -278,14 +270,6 @@ public class Game {
             }
         }
         return true;
-    }
-
-    /**
-     * Adds a player to the game
-     * @param player the player to be added
-     */
-    public void addPlayer(Player player) {
-        players.append(player);
     }
 
     /**
@@ -329,21 +313,13 @@ public class Game {
     }
 
     /**
-     * Gives a card from the deck to a player
-     * @param player the player who will get the card
-     */
-    public void pickUpCard(Player player){
-        player.addHand(deck.pop());
-    }
-
-    /**
      * Deals the same amount of cards to each player
      * @param cardsPerPlayer the amount of cards each player will get
      */
     public void dealCards(int cardsPerPlayer){
         for(int i = 0; i < cardsPerPlayer; i++){
             for(int j = 0; j < players.size(); j++){
-                pickUpCard(players.valueAt(j));
+                players.valueAt(j).addHand(deck.pop());
             }
         }
     }

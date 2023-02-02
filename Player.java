@@ -1,7 +1,7 @@
 /*
  * Sam Sah-Nixon
  * Date Created: 01/27/23
- * Last Modified: 02/01/23
+ * Last Modified: 02/02/23
  * Description: A class that represents a player.
  */
 public class Player implements Comparable<Player>{
@@ -73,15 +73,6 @@ public class Player implements Comparable<Player>{
             }
             hand.swap(i, minIndex);
         }
-    }
-
-    /**
-     * Compares 2 players by their name.
-     * @param other the other player to compare to
-     * @return true if the player has the same name as the other player, false otherwise
-     */
-    public boolean equals(Player other){
-        return this.name.equals(other.name);
     }
 
     /**
