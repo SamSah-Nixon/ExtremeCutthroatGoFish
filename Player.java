@@ -110,7 +110,7 @@ public class Player implements Comparable<Player>{
     /**
      * Checks if the player has a card with the given rank.
      * @param rank the rank to check for
-     * @return true if the player has a card with the given rank, false otherwise
+     * @return the first instance of a card with the given rank, or null if the player does not have a card with the given rank
      */
     public Card hasRank(String rank){
         for(int i = 0; i< hand.size(); i++){

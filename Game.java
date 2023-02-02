@@ -131,7 +131,8 @@ public class Game {
             int count = 0;
             //While the player has the card, give it to the current player and count how many they have taken
             while (askee.hasRank(cardName) != null) {
-                giveCard(askee, currentPlayer, askee.hasRank(cardName));
+                askee.removeHand(askee.hasRank(cardName));
+                currentPlayer.addHand(askee.hasRank(cardName));
                 count++;
             }
             if (count == 1)
@@ -322,17 +323,6 @@ public class Game {
                 players.valueAt(j).addHand(deck.pop());
             }
         }
-    }
-
-    /**
-     * Gives a card from one player to another
-     * @param giver the person giving the card
-     * @param getter the person getting the card
-     * @param card the card being given
-     */
-    public void giveCard(Player giver, Player getter, Card card){
-        giver.removeHand(card);
-        getter.addHand(card);
     }
 
     /**
