@@ -109,6 +109,7 @@ public class Game {
     public boolean turn() throws InterruptedException {
         System.out.println("\nThere are " + deck.size() + " cards left in the deck");
         System.out.println("\n\n" + currentPlayer.getName() + "'s turn");
+        Thread.sleep(750);
         currentPlayer.sortCards();
         String cardName;
         //Askee = the player you are asking a card for
@@ -121,10 +122,8 @@ public class Game {
             do {
                 askee = askForAskee();
             } while (askee == null);
-        } else {
-            //If the player has no cards left then go fish
-            System.out.println("You have no cards left. Game End!");
-            gameEnd();
+        }
+        else {
             return false;
         }
         System.out.println(currentPlayer.getName() + " is asking " + askee.getName() + " for a " + cardName);
