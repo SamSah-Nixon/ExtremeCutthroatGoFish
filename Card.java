@@ -56,7 +56,7 @@ public class Card implements Comparable<Card>{
      * @return A string representation of the card.
      */
     public String toString() {
-        return getRank() + " of " + getSuit();
+        return getRank() + "/" + getSuit();
     }
 
     /**

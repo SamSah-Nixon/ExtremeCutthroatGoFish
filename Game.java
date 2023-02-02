@@ -21,17 +21,9 @@ public class Game {
      * Sets up a game of go fish by asking the amount of players and decks to be used
      */
     public void gameSetupText(){
-        int playerNumber = 0;
-        //Ask for number of players
-        do{
-            try{
-                playerNumber = Integer.parseInt(ask("How many real players?"));
-            } catch(Exception e){
-                System.out.println("Invalid input. Please input an integer");
-            }
-            if(playerNumber < 1 || playerNumber > 4)
-                System.out.println("Number must be greater than 0 and less than 5");
-        } while (playerNumber < 1 || playerNumber > 4);
+        System.out.println("Welcome to Go Fish!");
+        System.out.println("Input Q to quit at any time.");
+        addPlayer(new Player(ask("What is your name?"), false));
 
         //Ask for number of AI players
         int aiNumber = 0;
@@ -41,21 +33,12 @@ public class Game {
             } catch(Exception e){
                 System.out.println("Invalid input. Please input an integer");
             }
-            if(aiNumber + playerNumber > 4 || aiNumber + playerNumber < 2)
-                System.out.println("Number of all players must be greater than 1 and less than 5");
-        } while (aiNumber + playerNumber > 4 || aiNumber + playerNumber < 2);
+            if(aiNumber > 3 || aiNumber  < 1)
+                System.out.println("Number of AI players must be between 1 and 3");
+        } while (aiNumber > 3 || aiNumber < 1);
 
         //Ask for names of players
         String name;
-        for(int i = 1; i <= playerNumber; i++) {
-            name = ask("What is the name of player " + i + "?");
-            if (notValidPlayer(name))
-                addPlayer(new Player(name, false));
-            else{
-                System.out.println("Name already taken. Please choose another name");
-                i--;
-            }
-        }
         for(int i = 1; i <= aiNumber; i++){
             name = ask("What is the name of AI player " + i + "?");
             if(notValidPlayer(name))
@@ -206,12 +189,13 @@ public class Game {
      */
     public Player askForAskee() {
         if(currentPlayer.isReal()) {
-            System.out.println("Who would you like to ask?");
+            System.out.print("Who would you like to ask? (");
             //Print all players except yourself
-            for (int i = 0; i < players.size(); i++) {
+            for (int i = 0; i < players.size() - 1; i++) {
                 if (players.valueAt(i) != currentPlayer)
-                    System.out.println(players.valueAt(i).getName());
+                    System.out.print(players.valueAt(i).getName()+",");
             }
+            System.out.println(players.valueAt(players.size()-1).getName()+")");
             String playerName = ask("");
             //Prevent asking yourself
             if (playerName.equals(currentPlayer.getName())) {
@@ -257,13 +241,11 @@ public class Game {
      * @return true if the game has ended, false otherwise
      */
     private boolean checkEndGame() {
-        if(deck.size() != 0)
-            return false;
         for(int i = 0; i < players.size(); i++){
-            if(players.valueAt(i).getHand().size() != 0)
-                return false;
+            if(players.valueAt(i).getHand().size() == 0)
+                return true;
         }
-        return true;
+        return false;
     }
 
     /**
