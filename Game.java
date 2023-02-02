@@ -91,6 +91,7 @@ public class Game {
                     anotherTurn = turn();
             } catch(Exception e){
                 System.err.println("Error: " + e);
+                e.printStackTrace();
             }
             currentPlayer = players.next(currentPlayer);
             if(checkEndGame()) {
@@ -114,11 +115,9 @@ public class Game {
         Player askee;
         //Gets the card and the player to ask for if the player has cards left
         do {
-            Thread.sleep(500);
             cardName = askForCard();
         } while(cardName == null);
         do{
-            Thread.sleep(500);
             askee = askForAskee();
         } while(askee == null);
         System.out.println(currentPlayer.getName() + " is asking " + askee.getName() + " for a " + cardName);
