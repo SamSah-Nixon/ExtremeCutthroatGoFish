@@ -1,7 +1,7 @@
 /*
  * Sam Sah-Nixon
  * Date Created: 01/27/23
- * Last Modified: 01/27/23
+ * Last Modified: 02/02/23
  * Description: The class that runs the game. Contains the methods for setting up the game and running the game
  */
 import java.util.Scanner;
@@ -106,7 +106,6 @@ public class Game {
      * @throws InterruptedException if the thread is interrupted while sleeping
      */
     public boolean turn() throws InterruptedException {
-        Thread.sleep(250);
         System.out.println("\nThere are " + deck.size() + " cards left in the deck");
         System.out.println("\n\n" + currentPlayer.getName() + "'s turn");
         currentPlayer.sortCards();
@@ -114,27 +113,18 @@ public class Game {
         //Askee = the player you are asking a card for
         Player askee;
         //Gets the card and the player to ask for if the player has cards left
-        if(!(currentPlayer.getHand().size() == 0)){
-            do {
-                Thread.sleep(500);
-                cardName = askForCard();
-            } while(cardName == null);
-            do{
-                Thread.sleep(500);
-                askee = askForAskee();
-            } while(askee == null);
-        }
-        else{
-            System.out.println("You have no cards left. Go Fish!");
+        do {
             Thread.sleep(500);
-            goFish();
-            return false;
-        }
+            cardName = askForCard();
+        } while(cardName == null);
+        do{
+            Thread.sleep(500);
+            askee = askForAskee();
+        } while(askee == null);
         System.out.println(currentPlayer.getName() + " is asking " + askee.getName() + " for a " + cardName);
         //If they don't have the card then go fish
         if (askee.hasRank(cardName) == null) {
             System.out.println("Go Fish!");
-            Thread.sleep(500);
             goFish();
             return false;
         } else {
@@ -195,7 +185,7 @@ public class Game {
                 if (players.valueAt(i) != currentPlayer)
                     System.out.print(players.valueAt(i).getName()+",");
             }
-            System.out.println(players.valueAt(players.size()-1).getName()+")");
+            System.out.print(players.valueAt(players.size()-1).getName()+")");
             String playerName = ask("");
             //Prevent asking yourself
             if (playerName.equals(currentPlayer.getName())) {
@@ -377,6 +367,11 @@ public class Game {
     public String ask(String question){
         System.out.println(question);
         Scanner scanner = new Scanner(System.in);
-        return scanner.next();
+        String answer = scanner.next();
+        if(answer.equalsIgnoreCase("Q")){
+            System.out.println("Quitting game");
+            System.exit(0);
+        }
+        return answer;
     }
 }
