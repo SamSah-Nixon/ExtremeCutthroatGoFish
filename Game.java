@@ -114,12 +114,19 @@ public class Game {
         //Askee = the player you are asking a card for
         Player askee;
         //Gets the card and the player to ask for if the player has cards left
-        do {
-            cardName = askForCard();
-        } while(cardName == null);
-        do{
-            askee = askForAskee();
-        } while(askee == null);
+        if(currentPlayer.getHand().size() != 0) {
+            do {
+                cardName = askForCard();
+            } while (cardName == null);
+            do {
+                askee = askForAskee();
+            } while (askee == null);
+        } else {
+            //If the player has no cards left then go fish
+            System.out.println("You have no cards left. Game End!");
+            gameEnd();
+            return false;
+        }
         System.out.println(currentPlayer.getName() + " is asking " + askee.getName() + " for a " + cardName);
         //If they don't have the card then go fish
         if (askee.hasRank(cardName) == null) {

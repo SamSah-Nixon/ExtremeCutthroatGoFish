@@ -54,7 +54,7 @@ public class Player implements Comparable<Player>{
                 removeHand(hand.valueAt(i - 2));
                 removeHand(hand.valueAt(i - 3));
                 finishedSets++;
-                System.out.println("You now have "+finishedSets+" finished sets.");
+                System.out.println(name+" now has "+finishedSets+" finished sets.");
                 return;
             }
         }
