@@ -71,7 +71,7 @@ public class Game {
         shuffleDeck();
         dealCards(7);
     }
-    
+
     /**
      * Runs the game
      */
@@ -175,7 +175,7 @@ public class Game {
             int randomRank;
             do
                 randomRank = (int)(Math.random()*13);
-                while (currentPlayer.hasRank(randomRank) == null);
+            while (currentPlayer.hasRank(randomRank) == null);
             return new Card((randomRank-1)*4).getRank();
         }
     }
@@ -208,7 +208,7 @@ public class Game {
             Player askee;
             do
                 askee = players.valueAt((int)(Math.random()*players.size()));
-                while (askee.getName().equals(currentPlayer.getName()));
+            while (askee.getName().equals(currentPlayer.getName()));
             return askee;
         }
     }
@@ -264,7 +264,7 @@ public class Game {
         }
         System.out.println("The Winner(s) are : "+result +" with "+largest+" sets!");
     }
-    
+
     /**
      * Checks to see if a string is the name of a valid player in the game
      * @param playerName the string to check
