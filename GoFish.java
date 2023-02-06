@@ -7,7 +7,7 @@
 public class GoFish {
     public static void main(String[] args) {
         System.out.println("=================================");
-        System.out.println("          G O  F I S H !         ");
+        System.out.println("          G O F I S H !          ");
         System.out.println("=================================");
 
         Game game = new Game();
