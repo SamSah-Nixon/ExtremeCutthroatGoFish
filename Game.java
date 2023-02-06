@@ -142,9 +142,9 @@ public class Game {
                 count++;
             }
             if (count == 1)
-                System.out.println("! "+askee.getName() + " has a " + cardName + "!");
+                System.out.println(askee.getName() + " has a " + cardName + "!");
             else
-                System.out.println("! "+askee.getName() + " has " + count + " " + cardName + "s!");
+                System.out.println(askee.getName() + " has " + count + " " + cardName + "s!");
             Thread.sleep(1000);
             currentPlayer.sortCards();
             currentPlayer.checkCompleteSet();
