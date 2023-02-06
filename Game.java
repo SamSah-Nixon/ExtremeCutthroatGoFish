@@ -71,7 +71,7 @@ public class Game {
         shuffleDeck();
         dealCards(7);
     }
-    
+
     /**
      * Runs the game
      */
@@ -136,8 +136,9 @@ public class Game {
             int count = 0;
             //While the player has the card, give it to the current player and count how many they have taken
             while (askee.hasRank(cardName) != null) {
-                askee.removeHand(askee.hasRank(cardName));
-                currentPlayer.addHand(askee.hasRank(cardName));
+                Card swapCard = askee.hasRank(cardName);
+                askee.removeHand(swapCard);
+                currentPlayer.addHand(swapCard);
                 count++;
             }
             if (count == 1)
@@ -174,7 +175,7 @@ public class Game {
             int randomRank;
             do
                 randomRank = (int)(Math.random()*13);
-                while (currentPlayer.hasRank(randomRank) == null);
+            while (currentPlayer.hasRank(randomRank) == null);
             return new Card((randomRank-1)*4).getRank();
         }
     }
@@ -207,7 +208,7 @@ public class Game {
             Player askee;
             do
                 askee = players.valueAt((int)(Math.random()*players.size()));
-                while (askee.getName().equals(currentPlayer.getName()));
+            while (askee.getName().equals(currentPlayer.getName()));
             return askee;
         }
     }
@@ -263,7 +264,7 @@ public class Game {
         }
         System.out.println("The Winner(s) are : "+result +" with "+largest+" sets!");
     }
-    
+
     /**
      * Checks to see if a string is the name of a valid player in the game
      * @param playerName the string to check

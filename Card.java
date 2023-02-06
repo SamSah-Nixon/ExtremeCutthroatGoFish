@@ -42,11 +42,14 @@ public class Card implements Comparable<Card>{
      * @return True if the rank is valid, false otherwise.
      */
     public static boolean validRank(String rank){
-        String[] validRanks = {"2", "3", "4", "5", "6", "7", "8", "9", "10", "Jack", "Queen", "King", "Ace"};
-        for (String validRank : validRanks) {
-            if (rank.equals(validRank)) {
+        if(rank.equals("Ace") || rank.equals("Jack") || rank.equals("Queen") || rank.equals("King"))
+            return true;
+        try{
+            int r = Integer.parseInt(rank);
+            if(r > 1 && r < 11)
                 return true;
-            }
+        } catch (NumberFormatException e){
+            return false;
         }
         return false;
     }
