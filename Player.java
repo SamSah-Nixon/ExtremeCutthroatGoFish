@@ -79,7 +79,7 @@ public class Player implements Comparable<Player>{
      * Prints the player's hand.
      */
     public void printHand(){
-        System.out.println(name + "'s hand:");
+        System.out.print(name + "'s hand:\n//////////////////////////");
         String prevRank = "";
         for(int i = 0; i < hand.size(); i++){
             if(prevRank.equals(hand.valueAt(i).getRank()))
@@ -88,7 +88,7 @@ public class Player implements Comparable<Player>{
                 System.out.print("\n"+hand.valueAt(i)+", ");
             prevRank = hand.valueAt(i).getRank();
         }
-        System.out.println();
+        System.out.println("\n//////////////////////////");
     }
 
     /**
