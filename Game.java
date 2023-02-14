@@ -341,8 +341,16 @@ public class Game {
         Scanner scanner = new Scanner(System.in);
         String answer = scanner.next();
         if(answer.equalsIgnoreCase("Q")){
-            System.out.println("Quitting game");
-            System.exit(0);
+            System.out.println("Are you sure you want to quit? (Y/N)");
+            answer = scanner.next();
+            if(answer.equalsIgnoreCase("Y")) {
+                System.out.println("Quitting game");
+                System.exit(0);
+            }
+            else {
+                System.out.println("Quit cancelled");
+                return ask(question);
+            }
         }
         return answer;
     }
